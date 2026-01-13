@@ -1,0 +1,47 @@
+# API Docker image for serving
+FROM python:3.9-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install Python dependencies (only what's needed for API)
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+    numpy>=1.21.0 \
+    pandas>=1.3.0 \
+    scikit-learn>=1.0.0 \
+    fastapi>=0.95.0 \
+    uvicorn>=0.20.0 \
+    pydantic>=1.10.0 \
+    joblib>=1.1.0 \
+    pyyaml>=6.0
+
+# Copy source code
+COPY src/ ./src/
+COPY configs/ ./configs/
+COPY models/ ./models/
+COPY data/processed/ ./data/processed/
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+ENV MODEL_DIR=/app/models
+ENV PREPROCESSOR_PATH=/app/data/processed/preprocessor.joblib
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run the API
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

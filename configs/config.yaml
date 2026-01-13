@@ -1,0 +1,54 @@
+# California Housing Price Prediction - MLOps Project
+# ================================================
+
+project:
+  name: "california-housing-mlops"
+  version: "1.0.0"
+  description: "End-to-end MLOps pipeline for housing price prediction"
+
+data:
+  raw_path: "data/raw/housing.csv"
+  processed_path: "data/processed"
+  test_size: 0.2
+  random_state: 42
+  
+  # Feature configuration
+  features:
+    numerical:
+      - MedInc        # Median income
+      - HouseAge      # Housing median age
+      - AveRooms      # Average rooms per household
+      - AveBedrms     # Average bedrooms per household
+      - Population    # Block group population
+      - AveOccup      # Average occupancy
+      - Latitude
+      - Longitude
+    target: MedHouseVal  # Median house value (in $100,000s)
+
+model:
+  name: "random_forest"
+  version: "v1"
+  params:
+    n_estimators: 100
+    max_depth: 15
+    min_samples_split: 5
+    min_samples_leaf: 2
+    random_state: 42
+    n_jobs: -1
+
+training:
+  experiment_name: "california-housing"
+  cv_folds: 5
+
+mlflow:
+  tracking_uri: "http://localhost:5000"
+  experiment_name: "california-housing-experiment"
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  model_path: "models/model.joblib"
+
+docker:
+  api_port: 8000
+  mlflow_port: 5000

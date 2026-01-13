@@ -1,0 +1,29 @@
+{
+  "current": "v1",
+  "history": [
+    {
+      "version": "v1",
+      "deployed_until": "2026-01-13T21:13:32.666597"
+    }
+  ],
+  "models": {
+    "v2": {
+      "path": "models\\model_v2.joblib",
+      "registered_at": "2026-01-13T21:10:33.365484",
+      "metrics": {
+        "mse": 0.4553414309258237,
+        "rmse": 0.6747899161411822,
+        "mae": 0.4876518493330311,
+        "r2": 0.6525196038132488,
+        "mape": 29.47381285328555
+      },
+      "description": "Auto-registered from ridge_experiment.joblib"
+    },
+    "v1": {
+      "path": "models\\model_v1.joblib",
+      "registered_at": "2026-01-13T21:10:33.330878",
+      "metrics": {},
+      "description": "Auto-registered from random_forest_vv1.joblib"
+    }
+  }
+}

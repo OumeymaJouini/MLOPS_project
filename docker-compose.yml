@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # MLflow Tracking Server
+  mlflow:
+    image: python:3.9-slim
+    container_name: mlflow-server
+    working_dir: /mlflow
+    command: >
+      bash -c "pip install mlflow && mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db --default-artifact-root /mlflow/artifacts"
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow_data:/mlflow
+    networks:
+      - bike-network
+
+  # Training Service
+  trainer:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.train
+    container_name: bike-trainer
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - PYTHONPATH=/app
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./mlruns:/app/mlruns
+    depends_on:
+      - mlflow
+    networks:
+      - bike-network
+    profiles:
+      - training
+
+  # API Service
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: bike-api
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_PATH=/app/models
+      - PYTHONPATH=/app
+    volumes:
+      - ./models:/app/models:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - bike-network
+
+  # API v2 (for version management demo)
+  api-v2:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: bike-api-v2
+    ports:
+      - "8001:8000"
+    environment:
+      - MODEL_PATH=/app/models
+      - MODEL_VERSION=v2
+      - PYTHONPATH=/app
+    volumes:
+      - ./models:/app/models:ro
+    networks:
+      - bike-network
+    profiles:
+      - v2
+
+networks:
+  bike-network:
+    driver: bridge
+
+volumes:
+  mlflow_data:
