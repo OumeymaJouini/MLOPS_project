@@ -1,0 +1,57 @@
+# DVC Pipeline Configuration
+# ==========================
+# Defines the ML pipeline stages for reproducibility
+
+stages:
+  load_data:
+    cmd: python -c "from src.data.data_loader import load_california_housing; load_california_housing('data/raw/housing.csv')"
+    deps:
+      - src/data/data_loader.py
+    outs:
+      - data/raw/housing.csv
+
+  preprocess:
+    cmd: python -c "
+from src.data.data_loader import load_from_csv
+from src.data.preprocessing import preprocess_pipeline
+df = load_from_csv('data/raw/housing.csv')
+preprocess_pipeline(df, save_dir='data/processed')
+"
+    deps:
+      - data/raw/housing.csv
+      - src/data/preprocessing.py
+    outs:
+      - data/processed/X_train.npy
+      - data/processed/X_test.npy
+      - data/processed/y_train.npy
+      - data/processed/y_test.npy
+      - data/processed/preprocessor.joblib
+
+  train:
+    cmd: python -m src.training.train
+    deps:
+      - data/processed/X_train.npy
+      - data/processed/y_train.npy
+      - src/training/train.py
+      - src/models/model.py
+      - configs/config.yaml
+    outs:
+      - models/random_forest.joblib
+    metrics:
+      - mlruns/
+
+  evaluate:
+    cmd: python -c "
+import joblib
+import numpy as np
+from src.evaluation.metrics import calculate_metrics
+model = joblib.load('models/random_forest.joblib')
+X_test = np.load('data/processed/X_test.npy')
+y_test = np.load('data/processed/y_test.npy')
+metrics = calculate_metrics(y_test, model.predict(X_test))
+print(f'R2: {metrics[\"r2\"]:.4f}')
+"
+    deps:
+      - models/random_forest.joblib
+      - data/processed/X_test.npy
+      - data/processed/y_test.npy

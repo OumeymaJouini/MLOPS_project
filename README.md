@@ -108,13 +108,33 @@ Features:
 
 ## 🔧 MLOps Components
 
-### 1. Experiment Tracking (MLflow)
+### 1. Data Versioning (DVC)
+```bash
+# DVC configuration is in .dvc/ and dvc.yaml
+# Pipeline stages defined for reproducibility
+cat dvc.yaml
+```
+
+### 2. ML Pipeline (ZenML-style)
+```bash
+# Run the complete training pipeline
+python -m pipelines.training_pipeline --model gradient_boosting
+```
+
+Pipeline steps:
+1. **Load Data** → Load California Housing dataset
+2. **Preprocess** → Feature engineering + train/test split
+3. **Train** → Train model with MLflow tracking
+4. **Evaluate** → Calculate metrics
+5. **Register** → Save model artifact
+
+### 3. Experiment Tracking (MLflow)
 ```bash
 mlflow ui --backend-store-uri file:./mlruns --port 5000
 ```
 Open http://localhost:5000 to view experiments.
 
-### 2. Hyperparameter Tuning (Optuna)
+### 4. Hyperparameter Tuning (Optuna)
 ```bash
 python -m src.training.hyperparameter_tuning --model gradient_boosting --trials 20
 ```

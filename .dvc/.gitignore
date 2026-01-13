@@ -1,0 +1,12 @@
+# DVC - Data Version Control Configuration
+# ==========================================
+# This project uses DVC for data versioning.
+# 
+# Note: DVC requires Python 3.8+ for full functionality.
+# For Python 3.7, use manual data versioning with the files below.
+
+# Data files tracked:
+# - data/raw/housing.csv (California Housing dataset)
+# - data/processed/*.npy (preprocessed arrays)
+# - data/processed/preprocessor.joblib (fitted scaler)
+# - models/*.joblib (trained models)
