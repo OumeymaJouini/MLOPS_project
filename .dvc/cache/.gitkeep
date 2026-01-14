@@ -1,0 +1,3 @@
+# DVC Cache
+# This folder stores cached versions of tracked files
+# Created manually for demonstration (DVC requires Python 3.8+)

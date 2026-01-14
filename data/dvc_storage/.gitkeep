@@ -1,0 +1,3 @@
+# DVC Remote Storage
+# This folder simulates remote storage for DVC tracked files
+# In production, this would be S3, GCS, or Azure Blob Storage

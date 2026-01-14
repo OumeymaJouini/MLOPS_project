@@ -1,8 +1,8 @@
-# 🏠 California Housing Price Prediction - MLOps Project
+#  California Housing Price Prediction - MLOps Project
 
 A complete MLOps pipeline for predicting median house values in California using the California Housing dataset.
 
-## 📋 Project Overview
+##  Project Overview
 
 This project demonstrates a production-ready MLOps workflow including:
 - **Experiment Tracking**: MLflow for logging experiments
@@ -11,7 +11,7 @@ This project demonstrates a production-ready MLOps workflow including:
 - **Version Management**: Custom version control with rollback
 - **Containerization**: Docker & Docker Compose
 
-## 🏆 Model Performance
+##  Model Performance
 
 | Model | Test R² | Test RMSE | Test MAE |
 |-------|---------|-----------|----------|
@@ -21,7 +21,7 @@ This project demonstrates a production-ready MLOps workflow including:
 | Ridge | 0.6525 | 0.6748 | 0.4877 |
 | ElasticNet | 0.5425 | 0.7743 | 0.5747 |
 
-## 🏗️ Project Structure
+##  Project Structure
 
 ```
 MLOPS_project/
